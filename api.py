@@ -10,17 +10,41 @@ import dbHandler
 from flask_sqlachemy import SQLAlchemy
 
 app = Flask("TODOAPI")
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite.///./task.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite.///./account.db'
 db+SQLALchemy(app)
 
 class User(db.Model):
-        id=db.Column(db.Integer, primary_keys = True)
-        public_id=db.Column(db.String(50), unique=True)
-        name=db.Column(db.String(50),unique=True)
-        password=db.Column(db.String(80))
-        admin=db.Column(db.Boolean)
-class Task(db.Model):
-        id=db.Colmun(db.Integer,primary_keys = True)
+	id=db.Column(db.Integer, primary_keys = True)
+	email = db.Column(db.String(120), unique=True, nullable=False)
+	name=db.Column(db.String(50),unique=True)
+	password=db.Column(db.String(80))
+	MFA=db.Column(db.Boolean)
+	admin=db.Column(db.Boolean)
+	created_at = db.Column(db.DateTime, default=datetime.utcnow)
+	accounts = db.relationship('Account', backref='user', lazy=True)
+
+class Account(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    account_number = db.Column(db.String(20), unique=True, nullable=False)
+    balance = db.Column(db.Float, nullable=False, default=100.0)
+	created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Token(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	code=db.Column(db.String(20), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+	isMFA = db.Column(db.Boolean)
+	used = db.Column(db.Boolean)
+	created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class FaqMessage(db.Model);
+	id = db.Column(db.Integer, primary_key=True)
+    account_number = db.Column(db.String(200), nullable=False)
+	created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Account(db.Model):
+        id=db.Column(db.Integer,primary_keys = True)
         text= db.Column(db.String(500))
         complete=db.Column(db.Boolean)
         user_id = db.Column(db.Integer)
@@ -28,19 +52,23 @@ class Task(db.Model):
 def wrap_user_in_dict(user):
         user_data={}
         user_data['id']=user.id
-        user_data['public_id']=user.public_id
+        user_data['email']=user.email
         user_data['name']=user.name
         user_data['password']=user.password
         user_data['admin']=user.admin
+		user_data['MFA']=user.MFA
+        user_data['created_at']=user.created_at
+        user_data['accounts']=user.accounts
         return user_data
 
-def wrap_task_in_dict(user):
-        task_data={}
-        task_data['id']=task.id
-        task_data['text']=task.text
-        task_data['complete']=task.complete
-        task_data['user_id']=task.user_id
-        return task_data
+def wrap_account_in_dict(account):
+        account_data={}
+        account_data['id']=account.id
+        account_data['account_number']=account.account_number
+        account_data['balance']=account.balance
+		account_data['created_at']=account.created_at
+        account_data['user_id']=account.user_id
+        return account_data
 
 def generate_password_hash(password):
         hash = hashlib.md5(password.encode())
@@ -67,7 +95,7 @@ def getInitialClientIP(request):
 @app.route('/')
 def hello():
         rep = dict()
-        rep['message'] = "Welcome to the task API."
+        rep['message'] = "Welcome to the account API."
         ip = getInitialClientIP(request)
         rep['ip'] = ip
 
@@ -117,54 +145,54 @@ def delete_user(p_id):
         return jsonify({'message' : 'route delete user is not implemented'})
 
 
-@app.route('/task', methods=['GET'])
-def get_all_tasks():
+@app.route('/account', methods=['GET'])
+def get_all_accounts():
         #Should only be available to users (not admins)
 
         output = []
-        tasks = Task.query.all()
-        for task in tasks:
-                output.append(wrap_task_in_dict(task))
+        accounts = Account.query.all()
+        for account in accounts:
+                output.append(wrap_account_in_dict(account))
 
-        return jsonify({'tasks':output})
+        return jsonify({'accounts':output})
 
 
-@app.route('/task/<task_id>', methods=['GET'])
-def get_one_task(task_id):
+@app.route('/account/<account_id>', methods=['GET'])
+def get_one_account(account_id):
         #Should only be available to users (not admins)
-        task = Task.query.filter_by(id=task_id).first()
-        task_data=""
-        if task != None:
-                task_data=wrap_task_in_dict(task)
-        #output = dbHandler.get_one_task(task_id)
-        return jsonify({'task':task_data})
+        account = Account.query.filter_by(id=account_id).first()
+        account_data=""
+        if account != None:
+                account_data=wrap_account_in_dict(account)
+        #output = dbHandler.get_one_account(account_id)
+        return jsonify({'account':account_data})
 
 
-@app.route('/task', methods=['POST'])
-def create_task():
+@app.route('/account', methods=['POST'])
+def create_account():
         #Should only be available to users (not admins)
         current_username = 0
         data = request.get_json()
-        new_task = Task((text=data['text'],complete=False,user_id=current_username)
-        db.session.add(new_task)
+        new_account = Account((text=data['text'],complete=False,user_id=current_username)
+        db.session.add(new_account)
         db.session.commit()
-        #dbHandler.create_task(data['text'], current_username)
+        #dbHandler.create_account(data['text'], current_username)
 
-        return jsonify({'message': 'Task created for ' + current_username})
+        return jsonify({'message': 'Account created for ' + current_username})
 
 
-@app.route('/task/<task_id>', methods=['PUT'])
-def complete_task(task_id):
+@app.route('/account/<account_id>', methods=['PUT'])
+def complete_account(account_id):
         #Should only be available to users (not admins)
-        return jsonify({'message' : 'route complete task is not implemented'})
+        return jsonify({'message' : 'route complete account is not implemented'})
 
 
 
-@app.route('/task/<task_id>', methods=['DELETE'])
-def delete_task(task_id):
+@app.route('/account/<account_id>', methods=['DELETE'])
+def delete_account(account_id):
         #Should only be available to users (not admins)
 
-        return jsonify({'message' : 'route delete task is not implemented'})
+        return jsonify({'message' : 'route delete account is not implemented'})
 
 @app.route('/login', methods=['post'])
 def login():
