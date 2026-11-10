@@ -15,6 +15,7 @@ db+SQLALchemy(app)
 
 class User(db.Model):
 	id=db.Column(db.Integer, primary_keys = True)
+	public_id=db.Column(db.String(50), unique=True)
 	email = db.Column(db.String(120), unique=True, nullable=False)
 	name=db.Column(db.String(50),unique=True)
 	password=db.Column(db.String(80))
@@ -64,6 +65,7 @@ def wrap_user_in_dict(user):
 def wrap_account_in_dict(account):
         account_data={}
         account_data['id']=account.id
+        user_data['public_id']=user.public_id
         account_data['account_number']=account.account_number
         account_data['balance']=account.balance
 		account_data['created_at']=account.created_at
