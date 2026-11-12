@@ -4,8 +4,6 @@ services:
       context: ./backend
       dockerfile: Dockerfile.be
     container_name: ctf_backend
-    environment:
-      - MAILERSEND_API_KEY=${MAILERSEND_API_KEY}
     expose:
       - "5000"
     networks:
