@@ -5,7 +5,7 @@ import puppeteer from 'puppeteer';
 const browser = await puppeteer.launch();
 const page = await browser.newPage();
 
-// Navigate the page to a URL.
+// mettre l'url du site
 await page.goto('https://developer.chrome.com/');
 
 // Set the screen size.
