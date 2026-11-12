@@ -19,7 +19,6 @@ class User(db.Model):
 	email = db.Column(db.String(120), unique=True, nullable=False)
 	name=db.Column(db.String(50),unique=True)
 	password=db.Column(db.String(80))
-	MFA=db.Column(db.Boolean)
 	admin=db.Column(db.Boolean)
 	created_at = db.Column(db.DateTime, default=datetime.utcnow)
 	accounts = db.relationship('Account', backref='user', lazy=True)
@@ -35,7 +34,6 @@ class Token(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	code=db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-	isMFA = db.Column(db.Boolean)
 	used = db.Column(db.Boolean)
 	created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -57,7 +55,6 @@ def wrap_user_in_dict(user):
         user_data['name']=user.name
         user_data['password']=user.password
         user_data['admin']=user.admin
-		user_data['MFA']=user.MFA
         user_data['created_at']=user.created_at
         user_data['accounts']=user.accounts
         return user_data
