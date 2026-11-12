@@ -1,0 +1,18 @@
+services:
+  be:
+    build:
+      context: .
+      dockerfile: Dockerfile.be
+    container_name: app_backend
+    ports:
+      - "25555:5000"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.fe
+    container_name: app_frontend
+    ports:
+      - "25556:5556"
+    depends_on:
+      - be
