@@ -1,7 +1,10 @@
-FROM python:3.10-slim
+FROM frgagnon/ctf3-srv:latest
 WORKDIR /app
 
 COPY requirement.txt .
 RUN pip install --no-cache-dir -r requirement.txt
 
-CMD ["python", "api.py"]
+COPY . .
+
+EXPOSE 5000
+CMD ["python", "app.py"]
