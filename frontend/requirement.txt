@@ -1,0 +1,6 @@
+Flask
+requests
+Flask-bcrypt
+bleach
+PyJWT
+flask-argon2
