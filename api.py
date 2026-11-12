@@ -1,12 +1,9 @@
 
-//changer 
-
 from flask import Flask, request, jsonify, make_response
 import hashlib
 import uuid
 import datetime
 import sys
-import dbHandler
 from flask_sqlachemy import SQLAlchemy
 
 app = Flask("TODOAPI")
