@@ -1,32 +1,27 @@
-import puppeteer from 'puppeteer';
+const puppeteer = require('puppeteer');
 
+(async () => {
+    //  Ouvre le navigateur
+    const browser = await puppeteer.launch({ headless: false });
+    const page = await browser.newPage();
+    
+    
+    await page.goto('`a ch=anger.https');
 
+    let id = 1;
 
-const browser = await puppeteer.launch();
-const page = await browser.newPage();
+    
+    while (true) {
+       
+        await page.type('#champ-texte', `${id} - Mon message auto`);
+        
+        
+        await page.click('#bouton-envoyer');
 
-// mettre l'url du site
-await page.goto('https://developer.chrome.com/');
+        console.log(`Message #${id} envoyé.`);
+        id++;
 
-// Set the screen size.
-await page.setViewport({width: 1080, height: 1024});
-
-// Open the search menu using the keyboard.
-await page.keyboard.press('/');
-
-// Type into search box using accessible input name.
-await page.locator('::-p-aria(Search)').fill('automate beyond recorder');
-
-// Wait and click on first result.
-await page.locator('.devsite-result-item-link').click();
-
-// Locate the full title with a unique string.
-const textSelector = await page
-  .locator('::-p-text(Customize and automate)')
-  .waitHandle();
-const fullTitle = await textSelector?.evaluate(el => el.textContent);
-
-// Print the full title.
-console.log('The title of this blog post is "%s".', fullTitle);
-
-await browser.close();
+       
+        await new Promise(r => setTimeout(r, 5000));
+    }
+})();
