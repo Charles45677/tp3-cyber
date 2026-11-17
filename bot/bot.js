@@ -8,7 +8,7 @@ const puppeteer = require('puppeteer');
     const page = await browser.newPage();
     
   
-    await page.goto('http://localhost:15556/');
+  await page.goto('http://ctf_frontend:15556/');
 
    
         
