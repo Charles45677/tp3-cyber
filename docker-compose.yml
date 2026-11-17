@@ -1,0 +1,38 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.be
+    container_name: ctf_backend
+    environment:
+      - MAILERSEND_API_KEY=${MAILERSEND_API_KEY}
+    expose:
+      - "5000"
+    networks:
+      - ctf_net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.fe
+    container_name: ctf_frontend
+    ports:
+      - "15556:15556"
+    depends_on:
+      - backend
+    networks:
+      - ctf_net
+
+  bot:
+    build:
+      context: ./bot
+      dockerfile: Dockerfile.bot
+    container_name: ctf_bot
+    depends_on:
+      - frontend
+    networks:
+      - ctf_net
+
+networks:
+  ctf_net:
+    driver: bridge
