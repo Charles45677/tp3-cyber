@@ -6,7 +6,7 @@ const puppeteer = require('puppeteer');
     const page = await browser.newPage();
     
     
-    await page.goto('`a ch=anger.https');
+   await page.goto('http://localhost:15556/');
 
     let id = 1;
 
