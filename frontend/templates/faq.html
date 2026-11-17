@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
   <title>FAQ - Banque de la Terre du Milieu</title>
 </head>
 <body>
@@ -22,6 +23,20 @@
       <textarea id="message" name="message" maxlength="500" required></textarea>
       <button type="submit">Envoyer</button>
     </form>
+
+    <h2>Messages de la FAQ</h2>
+    {% if faq_messages %}
+      <ol>
+        {% for faq_message in faq_messages %}
+          <li>
+            <p>{{ faq_message.message }}</p>
+            <small>#{{ faq_message.id }} — {{ faq_message.created_at }}</small>
+          </li>
+        {% endfor %}
+      </ol>
+    {% else %}
+      <p>Aucun message pour le moment.</p>
+    {% endif %}
   </main>
 </body>
 </html>

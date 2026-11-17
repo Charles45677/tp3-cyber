@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 
-from database import add_faq_message, initialize_database
+from database import add_faq_message, get_faq_messages, initialize_database
 
 
 app = Flask(__name__)
@@ -10,6 +10,11 @@ initialize_database()
 @app.get("/health")
 def health():
     return jsonify(status="ok")
+
+
+@app.get("/faq")
+def list_faq_messages():
+    return jsonify(messages=get_faq_messages())
 
 
 @app.post("/faq")

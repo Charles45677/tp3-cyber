@@ -35,7 +35,18 @@ def faq():
                 app.logger.error("Impossible de joindre le backend: %s", exc)
                 error = "Le backend est indisponible. Réessaie plus tard."
 
-    return render_template("faq.html", error=error, success=success)
+    faq_messages = []
+    try:
+        response = requests.get(f"{BACKEND_URL}/faq", timeout=5)
+        response.raise_for_status()
+        faq_messages = response.json()["messages"]
+    except (requests.RequestException, ValueError, KeyError) as exc:
+        app.logger.error("Impossible de charger la FAQ: %s", exc)
+        error = error or "Impossible de charger les messages de la FAQ."
+
+    return render_template(
+        "faq.html", error=error, success=success, faq_messages=faq_messages
+    )
 
 
 if __name__ == "__main__":

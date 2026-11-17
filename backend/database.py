@@ -24,3 +24,14 @@ def add_faq_message(message):
     with closing(sqlite3.connect(DATABASE_PATH)) as connection:
         with connection:
             connection.execute("INSERT INTO faq (message) VALUES (?)", (message,))
+
+
+def get_faq_messages():
+    with closing(sqlite3.connect(DATABASE_PATH)) as connection:
+        rows = connection.execute(
+            "SELECT id, message, created_at FROM faq ORDER BY id"
+        ).fetchall()
+    return [
+        {"id": row[0], "message": row[1], "created_at": row[2]}
+        for row in rows
+    ]
