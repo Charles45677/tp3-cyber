@@ -1,32 +1,40 @@
-import puppeteer from 'puppeteer';
+const puppeteer = require('puppeteer');
 
+(async () => {
+    
+    const browser = await puppeteer.launch({ 
+        headless: false,
+    });
+    const page = await browser.newPage();
+    
+  
+    await page.goto('http://localhost:15556/');
 
+   
+        
+    while (true) {
+        
+        const randomId = Math.random().toString(36).substring(2, 8);
+        const messageToSend = `je suis ${randomId}`;
+        
+        try {
+           
+            const inputSelector = 'input[name="message"], textarea[name="message"]';
+            await page.waitForSelector(inputSelector);
+            
+           
+            await page.click(inputSelector, { clickCount: 3 }); 
+            await page.type(inputSelector, messageToSend);
+            const submitSelector = 'button[type="submit"], input[type="submit"]';
+            await page.waitForSelector(submitSelector);
+            await page.click(submitSelector);
 
-const browser = await puppeteer.launch();
-const page = await browser.newPage();
+            
+        } catch (error) {
+            console.error(error.message);
+        }
 
-// mettre l'url du site
-await page.goto('https://developer.chrome.com/');
-
-// Set the screen size.
-await page.setViewport({width: 1080, height: 1024});
-
-// Open the search menu using the keyboard.
-await page.keyboard.press('/');
-
-// Type into search box using accessible input name.
-await page.locator('::-p-aria(Search)').fill('automate beyond recorder');
-
-// Wait and click on first result.
-await page.locator('.devsite-result-item-link').click();
-
-// Locate the full title with a unique string.
-const textSelector = await page
-  .locator('::-p-text(Customize and automate)')
-  .waitHandle();
-const fullTitle = await textSelector?.evaluate(el => el.textContent);
-
-// Print the full title.
-console.log('The title of this blog post is "%s".', fullTitle);
-
-await browser.close();
+       
+        await new Promise(r => setTimeout(r, 5000));
+    }
+})();
