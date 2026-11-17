@@ -13,7 +13,7 @@ const puppeteer = require('puppeteer');
     
     while (true) {
        
-        await page.type('#champ-texte', `${id} - Mon message auto`);
+        await page.type('#champ-texte', `${id}`);
         
         
         await page.click('#bouton-envoyer');
