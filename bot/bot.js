@@ -16,13 +16,12 @@ const puppeteer = require('puppeteer');
         
        
         await page.waitForSelector('#champ-texte');
-        await page.type('#champ-texte', `Message_${randomId}`);
+        await page.type('#champ-texte', `je suis ${randomId}`);
         
         
         await page.waitForSelector('#bouton-envoyer');
         await page.click('#bouton-envoyer');
 
-        console.log(`Message avec l'ID textuel "${randomId}" envoyé.`);
 
         
         await new Promise(r => setTimeout(r, 5000));
