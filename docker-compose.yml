@@ -20,7 +20,18 @@ services:
       - backend
     networks:
       - ctf_net
+  bot:
+    build:
+      context: ./bot
+      dockerfile: Dockerfile.bot
+    container_name: ctf_bot
+    depends_on:
+      - frontend
+    networks:
+      - ctf_net
 
 networks:
   ctf_net:
     driver: bridge
+
+
