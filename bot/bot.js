@@ -1,27 +1,30 @@
 const puppeteer = require('puppeteer');
 
 (async () => {
-    //  Ouvre le navigateur
-    const browser = await puppeteer.launch({ headless: false });
+    
+    const browser = await puppeteer.launch({ 
+        headless: false,
+    });
     const page = await browser.newPage();
     
-    
-   await page.goto('http://localhost:15556/');
+  
+    await page.goto('http://localhost:15556/');
 
-    let id = 1;
-
-    
     while (true) {
+        
+        const randomId = Math.random().toString(36).substring(2, 8);
+        
        
-        await page.type('#champ-texte', `${id}`);
+        await page.waitForSelector('#champ-texte');
+        await page.type('#champ-texte', `Message_${randomId}`);
         
         
+        await page.waitForSelector('#bouton-envoyer');
         await page.click('#bouton-envoyer');
 
-        console.log(`Message #${id} envoyé.`);
-        id++;
+        console.log(`Message avec l'ID textuel "${randomId}" envoyé.`);
 
-       
+        
         await new Promise(r => setTimeout(r, 5000));
     }
 })();
