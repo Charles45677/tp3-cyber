@@ -2,23 +2,28 @@ const puppeteer = require('puppeteer');
 
 (async () => {
     const browser = await puppeteer.launch({
-        headless: true,
-        args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-gpu'
-        ]
-    });
+    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium',
+    headless: true,
+    args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--no-zygote',
+        '--disable-gpu'
+    ]
+});
 
     const page = await browser.newPage();
     
   
   await page.goto('http://ctf_frontend:15556/faq');
 
+<<<<<<< HEAD
 
     const page = await browser.newPage();
 
+=======
+>>>>>>> 3a17abc (fix du bot)
     const targetUrl = process.env.TARGET_URL || 'http://ctf_frontend:15556/faq';
 
     while (true) {
